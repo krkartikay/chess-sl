@@ -37,7 +37,6 @@ def move_to_action(move: chess.Move) -> int:
 
 def action_to_move(action: int, board: chess.Board) -> chess.Move:
     a, b = divmod(action, 64)
-    print(a, b)
     move = chess.Move(a, b)
 
     # check for possible promotion
