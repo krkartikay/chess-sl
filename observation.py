@@ -49,9 +49,13 @@ class ContinuousObserver(Observer):
 
     def plot(self):
         filename = (f"{self.fullname}.png")
-        plt.figure()
+        fig = plt.figure()
         self._plot()
         plt.savefig(filename)
+        plt.close(fig)
+
+    def final_value(self):
+        return self.observations[-1]
 
     def avg(self):
         return sum(self.observations) / len(self.observations)
@@ -64,16 +68,18 @@ class DistributionObserver(Observer):
 
     def plot(self):
         filename = (f"{self.fullname}.png")
-        plt.figure()
+        fig = plt.figure()
         self._plot()
         plt.savefig(filename)
+        plt.close(fig)
 
     def avg(self):
         return sum(self.observations) / len(self.observations)
 
 
 def plot_together(observers):
-    plt.figure()
+    fig = plt.figure()
     for obs in observers:
         obs._plot()
     plt.savefig("combined.png")
+    plt.close(fig)

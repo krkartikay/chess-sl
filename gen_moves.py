@@ -6,16 +6,13 @@ from chess_utils import board_to_tensor, moves_to_tensor
 
 from typing import List, Tuple
 
-NUM_GAMES = 100
-
-
-def main():
+def generate_games(num_games):
     games = []
-    for i in range(NUM_GAMES):
-        print(f"Generating game {i+1}.")
+    print(f"Generating games.")
+    for i in range(num_games):
         game = generate_random_game()
         games.append(game)
-    print(f"Done! Generated {NUM_GAMES} games!")
+    print(f"Done! Generated {num_games} games!")
 
     print("Converting data to tensors.")
     positions, valid_moves = convert_to_tensors(games)
@@ -58,4 +55,4 @@ def save_to_file(positions, moves, filename='games.pth'):
 
 
 if __name__ == "__main__":
-    main()
+    generate_games(100)
