@@ -23,7 +23,14 @@ print(f"positions : {positions.size()}")
 print(f"moves     : {valid_moves.size()}")
 print()
 
-chess_model = ChessModel()
+# Transfer data to GPU if available
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+positions = positions.to(device)
+valid_moves = valid_moves.to(device)
+
+# Create the neural net
+chess_model = ChessModel().to(device)
 
 # Splitting the dataset into training and testing
 train_size = int(0.8 * len(positions))  # 80% for training
