@@ -1,5 +1,6 @@
 import torch
 import torch.nn.functional as F
+import observation
 
 from torch.utils.data import TensorDataset, DataLoader
 from torch.optim import SGD
@@ -46,8 +47,10 @@ test_dataloader = DataLoader(test_dataset, **dataloader_params)
 
 sgd_optimizer = SGD(chess_model.parameters(), lr=LEARNING_RATE)
 
+t_loss_obs = observation.ContinuousObserver("train_loss", "results")
+v_loss_obs = observation.ContinuousObserver("test_loss", "results")
+
 for epoch in range(NUM_EPOCHS):
-    batch_counter = 0
     for train_positions, train_valid_moves in train_dataloader:
         sgd_optimizer.zero_grad()
 
@@ -57,10 +60,7 @@ for epoch in range(NUM_EPOCHS):
         loss.backward()
         sgd_optimizer.step()
 
-        if batch_counter % 10 == 0:
-            print(f"{epoch+1}/{batch_counter+1:3d}, Loss: {loss.item():.4f}")
-
-        batch_counter += 1
+        t_loss_obs.record(loss.item())
 
     # Test Evaluation
     chess_model.eval()
@@ -75,3 +75,8 @@ for epoch in range(NUM_EPOCHS):
 
     average_test_loss = total_test_loss / len(test_dataloader)
     print(f"Epoch {epoch+1}, Average Test Loss: {average_test_loss:.4f}")
+    v_loss_obs.record(average_test_loss)
+
+t_loss_obs.plot()
+v_loss_obs.plot()
+v_loss_obs.write_csv()
