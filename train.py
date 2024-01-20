@@ -6,10 +6,11 @@ from torch.optim import SGD
 from torch.utils.data.dataset import random_split
 
 from model import ChessModel
+from observer import Observer
 
 BATCH_SIZE = 256
 LEARNING_RATE = 0.1
-NUM_EPOCHS = 10
+NUM_EPOCHS = 50
 
 print("Loading data...")
 
@@ -46,9 +47,10 @@ test_dataloader = DataLoader(test_dataset, **dataloader_params)
 
 sgd_optimizer = SGD(chess_model.parameters(), lr=LEARNING_RATE)
 
+loss_observer = Observer('loss', path="results/")
+
 for epoch in range(NUM_EPOCHS):
-    batch_counter = 0
-    for train_positions, train_valid_moves in train_dataloader:
+    for batch_num, (train_positions, train_valid_moves) in enumerate(train_dataloader):
         sgd_optimizer.zero_grad()
 
         move_probs = chess_model(train_positions)
@@ -57,10 +59,8 @@ for epoch in range(NUM_EPOCHS):
         loss.backward()
         sgd_optimizer.step()
 
-        if batch_counter % 10 == 0:
-            print(f"{epoch+1}/{batch_counter+1:3d}, Loss: {loss.item():.4f}")
-
-        batch_counter += 1
+        if batch_num % 10 == 0:
+            print(f"{epoch+1}/{batch_num+1:3d}, Loss: {loss.item():.4f}")
 
     # Test Evaluation
     chess_model.eval()
@@ -73,5 +73,10 @@ for epoch in range(NUM_EPOCHS):
                 test_move_probs, test_valid_moves)
             total_test_loss += test_loss.item()
 
+    last_training_loss = loss.item()
     average_test_loss = total_test_loss / len(test_dataloader)
+    loss_observer.record([last_training_loss, average_test_loss])
     print(f"Epoch {epoch+1}, Average Test Loss: {average_test_loss:.4f}")
+
+loss_observer.plot(['train_loss', 'test_loss'])
+loss_observer.write_csv(['train_loss', 'test_loss'])
