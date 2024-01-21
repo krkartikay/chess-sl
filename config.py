@@ -2,6 +2,18 @@
 
 from experiment import Config
 
+OPTIMIZER = Config(
+    name="OPTIMIZER",
+    values = ['SGD', 'ADAM']
+)
+
+NUM_TRAINING_EXAMPLES = Config(
+    name="NUM_TRAINING_EXAMPLES",
+    default=30000,
+    dev=10000,
+    values=[10000, 30000, 100000]
+)
+
 BATCH_SIZE = Config(
     name="BATCH_SIZE",
     default=128,
@@ -11,11 +23,12 @@ BATCH_SIZE = Config(
 NUM_EPOCHS = Config(
     name="NUM_EPOCHS",
     default=100,
-    dev=10
+    dev=20,
+    values=[10, 20, 50, 100]
 )
 
 LEARNING_RATE = Config(
     name="LEARNING_RATE",
-    default=0.1,
-    values=[0.01, 0.03, 0.1, 0.3, 1, 3, 10]
+    default=1,
+    values=[1e-1, 1, 1e1, 1e2]
 )

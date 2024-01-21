@@ -2,7 +2,6 @@ import torch
 import torch.nn.functional as F
 
 from torch.utils.data import TensorDataset, DataLoader
-from torch.optim import SGD
 from torch.utils.data.dataset import random_split
 
 from model import ChessModel
@@ -13,11 +12,12 @@ from config import *
 
 def train_model():
     print("Loading data...")
+    n_examples = NUM_TRAINING_EXAMPLES.get()
 
     with open("games.pth", "rb") as datafile:
         data = torch.load(datafile)
-        positions: torch.Tensor = data["positions"]
-        valid_moves: torch.Tensor = data["moves"].float()
+        positions: torch.Tensor = data["positions"][:n_examples]
+        valid_moves: torch.Tensor = data["moves"][:n_examples].float()
 
     print("Loaded data. Shape: ")
     print(f"positions : {positions.size()}")
@@ -45,7 +45,12 @@ def train_model():
     train_dataloader = DataLoader(train_dataset, **dataloader_params)
     test_dataloader = DataLoader(test_dataset, **dataloader_params)
 
-    sgd_optimizer = SGD(chess_model.parameters(), lr=LEARNING_RATE.get())
+    optimizer = {'SGD': torch.optim.SGD,
+                 'ADAM': torch.optim.Adam}[OPTIMIZER.get()]
+    lr = LEARNING_RATE.get()
+    if OPTIMIZER.get() == 'ADAM':
+        lr = LEARNING_RATE.get() * 3e-4
+    sgd_optimizer = optimizer(chess_model.parameters(), lr=lr)
 
     loss_observer = Observer('loss', path="results/",
                              labels=['train_loss', 'test_loss'])

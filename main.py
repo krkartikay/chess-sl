@@ -5,6 +5,11 @@ from experiment import Experiment
 from train import train_model
 
 
+def run_training():
+    # Train model
+    return train_model()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dev_mode', action='store_true')
@@ -15,10 +20,10 @@ def main():
 
     # Run the experiment
     experiment = Experiment(
-        variables=[BATCH_SIZE, LEARNING_RATE], dev_mode=dev_mode)
+        variables=[OPTIMIZER, LEARNING_RATE], dev_mode=dev_mode)
 
     experiment.run_experiment(
-        function=train_model,
+        function=run_training,
         time_limit=300)
 
 

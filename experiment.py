@@ -90,8 +90,8 @@ class Experiment:
         print("===================================================")
         print()
         self.all_configs_results.append({'run_num': self.run_number})
-        for key, value in self.selected_values.items():
-            self.all_configs_results[-1][key] = value
+        for config in ALL_CONFIGS:
+            self.all_configs_results[-1][config.name] = config.get()
         for key, value in results.items():
             self.all_configs_results[-1][key] = value
         self.all_configs_results[-1]['running_time'] = time_taken
