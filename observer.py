@@ -5,14 +5,24 @@ import csv
 import pickle
 from collections.abc import Iterable
 from matplotlib import pyplot as plt
+from typing import List
+
 
 class Observer:
-    def __init__(self, name, path="", suffix=""):
+    def __init__(self, name, path="", suffix="", labels=[]):
         self.name = name
+        self.labels = labels
+        self.observations = []
+        self.set_path(path, suffix)
+        ALL_OBSERVERS.append(self)
+
+    def clear(self):
+        self.observations = []
+
+    def set_path(self, path="", suffix=""):
         self.suffix = suffix
         self.fullname = os.path.join(
-            path, name + (f"_{suffix}" if suffix else ""))
-        self.observations = []
+            path, self.name + (f"_{suffix}" if suffix else ""))
 
     def record(self, variable):
         self.observations.append(variable)
@@ -22,7 +32,7 @@ class Observer:
         if len(self.observations) == 0:
             return
         if headings is None:
-            headings = [self.name]
+            headings = self.labels
         with open(filename, "w") as file_handle:
             csv_writer = csv.writer(file_handle)
             csv_writer.writerow(headings)
@@ -37,7 +47,7 @@ class Observer:
 
     def plot(self, legend=None):
         if legend is None:
-            legend = [self.name]
+            legend = self.labels
         filename = (f"{self.fullname}.png")
         plt.figure()
         plt.plot(self.observations)
@@ -46,3 +56,6 @@ class Observer:
 
     def avg(self):
         return sum(self.observations) / len(self.observations)
+
+
+ALL_OBSERVERS: List[Observer] = []

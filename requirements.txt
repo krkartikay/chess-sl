@@ -2,4 +2,3 @@ chess
 torch
 numpy
 matplotlib
-PyQt5
