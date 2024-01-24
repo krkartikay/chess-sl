@@ -9,8 +9,7 @@ from observer import Observer
 
 from config import *
 
-
-def train_model():
+def load_data(filename="games.pth"):
     print("Loading data...")
     n_examples = NUM_TRAINING_EXAMPLES.get()
 
@@ -22,7 +21,11 @@ def train_model():
     print("Loaded data. Shape: ")
     print(f"positions : {positions.size()}")
     print(f"moves     : {valid_moves.size()}")
-    print()
+
+    return positions, valid_moves
+
+def train_model():
+    positions, valid_moves = load_data()
 
     # Transfer data to GPU if available
     device = 'cuda' if torch.cuda.is_available() else 'cpu'

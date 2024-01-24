@@ -20,7 +20,7 @@ def main():
 
     # Run the experiment
     experiment = Experiment(
-        variables=[OPTIMIZER, LEARNING_RATE], dev_mode=dev_mode)
+        variables=[], dev_mode=dev_mode)
 
     experiment.run_experiment(
         function=run_training,

@@ -4,7 +4,8 @@ from experiment import Config
 
 OPTIMIZER = Config(
     name="OPTIMIZER",
-    values = ['SGD', 'ADAM']
+    default="ADAM",
+    values=['SGD', 'ADAM']
 )
 
 NUM_TRAINING_EXAMPLES = Config(

@@ -33,7 +33,7 @@ def generate_random_game() -> List[Tuple[chess.Board, List[chess.Move]]]:
         valid_moves = list(board.generate_legal_moves())
         # print(valid_moves)
         random_move = random.choice(valid_moves)
-        history.append((board, valid_moves))
+        history.append((chess.Board(board.fen()), valid_moves))
         board.push(random_move)
     return history
 

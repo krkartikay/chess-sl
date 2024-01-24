@@ -60,7 +60,7 @@ def action_to_move(action: int, board: chess.Board) -> chess.Move:
 
 
 def moves_to_tensor(moves: List[chess.Move]) -> torch.Tensor:
-    moves_tensor = torch.BoolTensor(64*64)
+    moves_tensor = torch.zeros(64*64)
     valid_actions = [move_to_action(move) for move in moves]
     moves_tensor[valid_actions] = 1
     return moves_tensor
