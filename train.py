@@ -86,4 +86,6 @@ def train_model():
         loss_observer.record([average_train_loss, average_test_loss])
         print(f"Epoch {epoch+1}, Average Test Loss: {average_test_loss:.4f}")
 
-    return {'final_train_loss': average_train_loss, 'final_test_loss': average_test_loss}
+    results = {'final_train_loss': average_train_loss, 'final_test_loss': average_test_loss}
+
+    return results, chess_model

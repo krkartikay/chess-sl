@@ -4,6 +4,7 @@ import csv
 import itertools
 import time
 import pathlib
+import torch
 from dataclasses import dataclass, field
 from typing import Dict, List, Any
 from observer import ALL_OBSERVERS
@@ -84,7 +85,7 @@ class Experiment:
         print(f"Config for this run:\n{self.selected_values}")
         print("===================================================")
         start_time = time.time()
-        results = function()
+        results, model = function()
         end_time = time.time()
         time_taken = end_time - start_time
         print("===================================================")
@@ -102,6 +103,10 @@ class Experiment:
                          suffix=f"{self.run_number:03d}")
             obs.plot()
             obs.write_csv()
+        # Save the model and the results
+        if model is not None:
+            with open(self.results_path + "model.pt", "wb") as model_file:
+                torch.save(model.state_dict(), model_file)
         self.save_results()
 
     def save_results(self):
