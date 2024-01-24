@@ -27,6 +27,8 @@ class Config:
             self.values.append(self.default)
 
     def get(self):
+        if self.expt is None:
+            return self.dev
         return self.expt.get_config(self)
 
 

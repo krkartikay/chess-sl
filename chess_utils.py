@@ -27,6 +27,18 @@ def board_to_tensor(board: chess.Board) -> torch.Tensor:
         tensor[0, :, :] -= 1
     return tensor
 
+def tensor_to_board(tensor: torch.Tensor) -> chess.Board:
+    b = chess.Board.empty()
+    for p in chess.PIECE_TYPES:
+        for sq in chess.SQUARES:
+            row, col = divmod(sq, 8)
+            pc = tensor[p, row, col]
+            if pc.item() == 1:
+                b.set_piece_at(sq, chess.Piece(p, chess.WHITE))
+            elif pc.item() == -1:
+                b.set_piece_at(sq, chess.Piece(p, chess.BLACK))
+    b.turn = (tensor[0,0,0].item() == 1)
+    return b
 
 def move_to_action(move: chess.Move) -> int:
     a = move.from_square
