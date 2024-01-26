@@ -39,7 +39,7 @@ def generate_random_game() -> List[Tuple[chess.Board, List[chess.Move]]]:
 
 
 def convert_to_tensors(
-        games: List[Tuple[chess.Board, List[chess.Move]]]) -> torch.Tensor:
+        games: List[List[Tuple[chess.Board, List[chess.Move]]]]) -> Tuple[torch.Tensor, torch.Tensor]:
     all_positions = []
     all_valid_moves = []
     for game in games:
