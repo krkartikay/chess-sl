@@ -105,7 +105,8 @@ class Experiment:
             obs.write_csv()
         # Save the model and the results
         if model is not None:
-            with open(self.results_path + "model.pt", "wb") as model_file:
+            with open(self.results_path 
+                      + f"model_{self.run_number:03d}.pt", "wb") as model_file:
                 torch.save(model.state_dict(), model_file)
         self.save_results()
 
