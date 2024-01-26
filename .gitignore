@@ -9,6 +9,10 @@
 *.png
 results/
 
+# Scratch file
+scratch.py
+scratch.txt
+
 # Python stuff
 *.pkl
 *.py[co]
