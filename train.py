@@ -61,6 +61,8 @@ def train_model(positions: torch.Tensor, valid_moves: torch.Tensor) -> Tuple[Dic
                              labels=['train_loss', 'test_loss'])
 
     for epoch in range(NUM_EPOCHS.get()):
+        # Training mode
+        chess_model.train()
         total_train_loss = 0
         for batch_num, (train_positions, train_valid_moves) in enumerate(train_dataloader):
             sgd_optimizer.zero_grad()

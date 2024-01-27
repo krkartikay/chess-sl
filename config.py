@@ -15,9 +15,27 @@ N_HIDDEN = Config(
     values=[1024,4096],
 )
 
+N_BLOCKS = Config(
+    name = "N_BLOCKS",
+    default=4,
+    values=[0,1,4,8]
+)
+
+N_CHANNELS = Config(
+    name="N_CHANNELS",
+    default=16,
+    dev=8,
+    values=[4,16,64,128]
+)
+
+FILTER_SIZE = Config(
+    name="FILTER_SIZE",
+    default=3
+)
+
 NUM_TRAINING_EXAMPLES = Config(
     name="NUM_TRAINING_EXAMPLES",
-    default=30000,
+    default=10000,
     dev=10000,
     values=[10000, 30000, 100000]
 )
@@ -32,11 +50,11 @@ NUM_EPOCHS = Config(
     name="NUM_EPOCHS",
     default=20,
     dev=10,
-    values=[10, 20, 50]
+    values=[20, 50]
 )
 
 LEARNING_RATE = Config(
     name="LEARNING_RATE",
-    default=10,
-    values=[1, 1e1]
+    default=1,
+    values=[1, 3]
 )

@@ -39,7 +39,8 @@ def main():
 
     # Run the experiment
     experiment = Experiment(
-        variables=[], dev_mode=dev_mode)
+        variables=[NUM_EPOCHS, N_BLOCKS, N_CHANNELS, BATCH_SIZE, LEARNING_RATE],
+        dev_mode=dev_mode)
 
     experiment.run_experiment(
         function=experiment_main,
