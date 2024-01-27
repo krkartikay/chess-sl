@@ -3,32 +3,42 @@ import torch.nn as nn
 import torch.nn.functional as F
 from config import *
 
+class ConvBlock(nn.Module):
+    def __init__(self):
+        super().__init__()
+        n_channels_in = 7
+        n_channels = N_CHANNELS.get()
+        filter_size = FILTER_SIZE.get()
+        bn_layer = nn.BatchNorm2d(n_channels_in)
+        conv_layer_up = nn.Conv2d(n_channels_in, n_channels, filter_size, padding='same')
+        conv_layer_down = nn.Conv2d(n_channels, n_channels_in, filter_size, padding='same')
+        self.seq = nn.Sequential(
+            bn_layer,
+            conv_layer_up,
+            nn.ReLU(),
+            conv_layer_down,
+            nn.ReLU(),
+        )
+
+    def forward(self, x):
+        return self.seq(x)
 
 class ChessModel(nn.Module):
     def __init__(self):
         super(ChessModel, self).__init__()
 
-        n_channels = N_CHANNELS.get()
-        self.conv_blocks = nn.Sequential()
-
+        self.conv_blocks = nn.ModuleList()
         for i in range(N_BLOCKS.get()):
-            n_channels_in  = 7 if i == 0 else N_CHANNELS.get()
-            filter_size = FILTER_SIZE.get()
-            conv_layer = nn.Conv2d(n_channels_in, n_channels, filter_size, padding='same')
-            bn_layer = nn.BatchNorm2d(n_channels)
-            self.conv_blocks.append(conv_layer)
-            self.conv_blocks.append(bn_layer)
-            self.conv_blocks.append(nn.ReLU())
+            block = ConvBlock()
+            self.conv_blocks.append(block)
 
-        if N_BLOCKS.get() == 0:
-            n_channels = 7
-
-        self.hidden_layer = nn.Linear(n_channels*8*8, N_HIDDEN.get())
+        self.hidden_layer = nn.Linear(7*8*8, N_HIDDEN.get())
         self.output_layer = nn.Linear(N_HIDDEN.get(), 64*64)
 
     def forward(self, x):
         # Apply conv blocks
-        x = self.conv_blocks(x)
+        for block in self.conv_blocks:
+            x = x + block(x)
         # Flatten the tensor
         x = x.view(x.size(0), -1)
         # Apply hidden layer

@@ -18,7 +18,8 @@ def experiment_main():
     results_dict['avg_moves'] = avg_moves
     results_dict['score'] = score
     all_moves_hist = [0]*10
-    predicted_moves = model(positions)
+    with torch.no_grad():
+        predicted_moves = model(positions)
     precision = calculate_precision(predicted_moves, valid_moves)
     recall = calculate_recall(predicted_moves, valid_moves)
     results_dict['precision'] = precision
@@ -39,7 +40,7 @@ def main():
 
     # Run the experiment
     experiment = Experiment(
-        variables=[NUM_EPOCHS, N_BLOCKS, N_CHANNELS, BATCH_SIZE, LEARNING_RATE],
+        variables=[],
         dev_mode=dev_mode)
 
     experiment.run_experiment(

@@ -11,20 +11,21 @@ OPTIMIZER = Config(
 N_HIDDEN = Config(
     name = "N_HIDDEN",
     default=4096,
-    dev=1024,
+    dev=4096,
     values=[1024,4096],
 )
 
 N_BLOCKS = Config(
     name = "N_BLOCKS",
-    default=4,
+    default=8,
+    dev=12,
     values=[0,1,4,8]
 )
 
 N_CHANNELS = Config(
     name="N_CHANNELS",
     default=16,
-    dev=8,
+    dev=1024,
     values=[4,16,64,128]
 )
 
@@ -36,7 +37,7 @@ FILTER_SIZE = Config(
 NUM_TRAINING_EXAMPLES = Config(
     name="NUM_TRAINING_EXAMPLES",
     default=10000,
-    dev=10000,
+    dev=100000,
     values=[10000, 30000, 100000]
 )
 
@@ -49,7 +50,7 @@ BATCH_SIZE = Config(
 NUM_EPOCHS = Config(
     name="NUM_EPOCHS",
     default=20,
-    dev=10,
+    dev=20,
     values=[20, 50]
 )
 

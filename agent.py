@@ -16,6 +16,7 @@ class RandomChessAgent(ChessAgent):
 class ChessModelAgent(ChessAgent):
     def __init__(self, model: ChessModel):
         self.model = model
+        self.model.eval()
 
     def choose_move(self, position: chess.Board) -> chess.Move | None:
         # Neural net interface here.
