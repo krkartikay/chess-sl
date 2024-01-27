@@ -18,7 +18,7 @@ NUM_TRAINING_EXAMPLES = Config(
 BATCH_SIZE = Config(
     name="BATCH_SIZE",
     default=128,
-    values=[64, 128, 256, 512]
+    values=[8, 64, 128, 256, 512]
 )
 
 NUM_EPOCHS = Config(

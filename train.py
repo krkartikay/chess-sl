@@ -4,12 +4,14 @@ import torch.nn.functional as F
 from torch.utils.data import TensorDataset, DataLoader
 from torch.utils.data.dataset import random_split
 
+from typing import Dict, List, Tuple
+
 from model import ChessModel
 from observer import Observer
 
 from config import *
 
-def load_data(filename="games.pth"):
+def load_data(filename="games.pth") -> Tuple[torch.Tensor, torch.Tensor]:
     print("Loading data...")
     n_examples = NUM_TRAINING_EXAMPLES.get()
 
@@ -24,9 +26,7 @@ def load_data(filename="games.pth"):
 
     return positions, valid_moves
 
-def train_model():
-    positions, valid_moves = load_data()
-
+def train_model(positions: torch.Tensor, valid_moves: torch.Tensor) -> Tuple[Dict, ChessModel]:
     # Transfer data to GPU if available
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 

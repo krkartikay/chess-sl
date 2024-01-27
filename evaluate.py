@@ -2,9 +2,43 @@ import torch
 import chess
 import random
 
-from typing import Tuple
+from typing import Tuple, List
+from model import ChessModel
+from agent import ChessAgent, ChessModelAgent, RandomChessAgent
 
-from agent import ChessAgent
+def evaluate_model_vs_random(model: ChessModel,
+                             num_games: int = 100) -> Tuple[float, float, List[int]]:
+    # Evaluates the given model by playing it against RandomAgent and returns score
+    moves_played: List[int] = []
+    total_score = 0
+    agent = ChessModelAgent(model)
+    other = RandomChessAgent()
+    for i in range(num_games):
+        (moves, score, draws, other_score,
+            forfeit) = play_agent_vs_agent(agent, other)
+        print(f"{i:3d} Evaluating model...")
+        moves_played.append(moves)
+        total_score += score
+        total_score += draws / 2
+    avg_moves_played = sum(moves_played) / len(moves_played)
+    return (avg_moves_played, total_score, moves_played)
+
+def evaluate_model_vs_model(model: ChessModel, other: ChessModel,
+                            num_games: int = 100) -> Tuple[float, int, int, List[int]]:
+    # Evaluates the given model by playing it against another Baseline model and returns score
+    moves_played: List[int] = []
+    total_score = 0
+    total_draws = 0
+    agent = ChessModelAgent(model)
+    other_agent = ChessModelAgent(other)
+    for i in range(num_games):
+        (moves, score, draws, other_score,
+            forfeit) = play_agent_vs_agent(agent, other_agent)
+        moves_played.append(moves)
+        total_score += score
+        total_draws += draws
+    avg_moves_played = sum(moves_played) / len(moves_played)
+    return (avg_moves_played, total_score, total_draws, moves_played)
 
 def play_agent_vs_agent(agent: ChessAgent, other: ChessAgent) -> Tuple[int, int, int, int, bool]:
     # Plays a game using the given model vs random-agent
