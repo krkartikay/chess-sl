@@ -20,7 +20,7 @@ def plot_move_set(moves: torch.Tensor):
                 for end_col in range(8):
                     action_num = (start_row+start_col*8)*64+(end_row+end_col*8)
                     moves_view[start_col*8+end_col][start_row*8+end_row] = moves[action_num]
-    plt.imshow(moves_view, origin="lower", vmin=0, vmax=1)
+    plt.imshow(moves_view, origin="lower")
     plt.show()
 
 def plot_board_moves(board: chess.Board, probs: torch.Tensor, k=20, size=400):

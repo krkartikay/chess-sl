@@ -8,17 +8,22 @@ OPTIMIZER = Config(
     values=['SGD', 'ADAM']
 )
 
+DROPOUT_ENABLED = Config(
+    name="DROPOUT_ENABLED",
+    values=[False, True]
+)
+
 N_HIDDEN = Config(
     name = "N_HIDDEN",
     default=4096,
-    dev=4096,
+    dev=1024,
     values=[1024,4096],
 )
 
 N_BLOCKS = Config(
     name = "N_BLOCKS",
     default=8,
-    dev=4,
+    dev=2,
     values=[0,1,4,8]
 )
 
@@ -31,7 +36,7 @@ N_CHANNELS = Config(
 
 FILTER_SIZE = Config(
     name="FILTER_SIZE",
-    default=9
+    default=3
 )
 
 NUM_TRAINING_EXAMPLES = Config(
@@ -56,6 +61,6 @@ NUM_EPOCHS = Config(
 
 LEARNING_RATE = Config(
     name="LEARNING_RATE",
-    default=1,
+    default=3,
     values=[1, 3]
 )

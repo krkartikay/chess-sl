@@ -9,6 +9,9 @@ class ConvBlock(nn.Module):
         n_channels_in = 7
         n_channels = N_CHANNELS.get()
         filter_size = FILTER_SIZE.get()
+        self.dropout = None
+        if DROPOUT_ENABLED.get():
+            self.dropout = nn.Dropout2d(p=0.2)
         bn_layer = nn.BatchNorm2d(n_channels_in)
         conv_layer_up = nn.Conv2d(n_channels_in, n_channels, filter_size, padding='same')
         conv_layer_down = nn.Conv2d(n_channels, n_channels_in, filter_size, padding='same')
@@ -21,6 +24,8 @@ class ConvBlock(nn.Module):
         )
 
     def forward(self, x):
+        if self.dropout:
+            x = self.dropout(x)
         return self.seq(x)
 
 class ChessModel(nn.Module):
