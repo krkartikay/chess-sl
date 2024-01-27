@@ -18,18 +18,18 @@ NUM_TRAINING_EXAMPLES = Config(
 BATCH_SIZE = Config(
     name="BATCH_SIZE",
     default=128,
-    values=[8, 64, 128, 256, 512]
+    values=[64, 128, 256]
 )
 
 NUM_EPOCHS = Config(
     name="NUM_EPOCHS",
-    default=100,
-    dev=20,
-    values=[10, 20, 50, 100]
+    default=20,
+    dev=10,
+    values=[10, 20, 50]
 )
 
 LEARNING_RATE = Config(
     name="LEARNING_RATE",
-    default=1,
-    values=[1e-1, 1, 1e1, 1e2]
+    default=10,
+    values=[1e-1, 1, 1e1]
 )
