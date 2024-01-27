@@ -1,20 +1,23 @@
 import argparse
+import torch
 
 from config import *
 from experiment import Experiment
 from train import load_data, train_model
 from evaluate import evaluate_model_vs_random, calculate_precision, calculate_recall
 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+positions, valid_moves = load_data()
+positions = positions.to(device)
+valid_moves = valid_moves.to(device)
+
 def experiment_main():
     # Train model and evaluate it
-    positions, valid_moves = load_data()
     results_dict, model = train_model(positions, valid_moves)
     avg_moves, score, all_moves = evaluate_model_vs_random(model)
     results_dict['avg_moves'] = avg_moves
     results_dict['score'] = score
     all_moves_hist = [0]*10
-    positions = positions.to(model.device())
-    valid_moves = valid_moves.to(model.device())
     predicted_moves = model(positions)
     precision = calculate_precision(predicted_moves, valid_moves)
     recall = calculate_recall(predicted_moves, valid_moves)

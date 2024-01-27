@@ -8,6 +8,13 @@ OPTIMIZER = Config(
     values=['SGD', 'ADAM']
 )
 
+N_HIDDEN = Config(
+    name = "N_HIDDEN",
+    default=4096,
+    dev=1024,
+    values=[1024,4096],
+)
+
 NUM_TRAINING_EXAMPLES = Config(
     name="NUM_TRAINING_EXAMPLES",
     default=30000,
@@ -31,5 +38,5 @@ NUM_EPOCHS = Config(
 LEARNING_RATE = Config(
     name="LEARNING_RATE",
     default=10,
-    values=[1e-1, 1, 1e1]
+    values=[1, 1e1]
 )

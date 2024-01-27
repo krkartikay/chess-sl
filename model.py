@@ -1,16 +1,15 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
-N_HIDDEN = 64*64
+from config import N_HIDDEN
 
 
 class ChessModel(nn.Module):
     def __init__(self):
         super(ChessModel, self).__init__()
 
-        self.hidden_layer = nn.Linear(7*8*8, N_HIDDEN)
-        self.output_layer = nn.Linear(N_HIDDEN, 64*64)
+        self.hidden_layer = nn.Linear(7*8*8, N_HIDDEN.get())
+        self.output_layer = nn.Linear(N_HIDDEN.get(), 64*64)
 
     def forward(self, x):
         # Flatten the tensor

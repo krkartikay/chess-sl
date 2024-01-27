@@ -53,6 +53,8 @@ def train_model(positions: torch.Tensor, valid_moves: torch.Tensor) -> Tuple[Dic
     lr = LEARNING_RATE.get()
     if OPTIMIZER.get() == 'ADAM':
         lr = LEARNING_RATE.get() * 3e-4
+    if OPTIMIZER.get() == 'SGD':
+        lr = LEARNING_RATE.get() * 1e2
     sgd_optimizer = optimizer(chess_model.parameters(), lr=lr)
 
     loss_observer = Observer('loss', path="results/",
