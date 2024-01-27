@@ -1,6 +1,7 @@
 import chess
 import random
 import torch
+import torch.nn.functional as F
 
 from model import ChessModel
 from chess_utils import board_to_tensor, action_to_move
@@ -24,7 +25,8 @@ class ChessModelAgent(ChessAgent):
         # Batching? Inference Server? Ideas?
         position_tensor = board_to_tensor(position).unsqueeze(0)
         position_tensor = position_tensor.to(self.model.device())
-        probs = self.model(position_tensor)
+        logits = self.model(position_tensor)
+        probs = F.softmax(logits, dim=1)
         if probs.sum() <= 0:
             # This sometimes happens if the model is not trained properly
             # print(position)

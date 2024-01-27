@@ -1,5 +1,6 @@
 import argparse
 import torch
+import torch.nn.functional as F
 
 from config import *
 from experiment import Experiment
@@ -19,9 +20,10 @@ def experiment_main():
     results_dict['score'] = score
     all_moves_hist = [0]*10
     with torch.no_grad():
-        predicted_moves = model(positions)
-    precision = calculate_precision(predicted_moves, valid_moves)
-    recall = calculate_recall(predicted_moves, valid_moves)
+        predicted_logits = model(positions)
+        predicted_moves = F.softmax(predicted_logits, dim=1)
+    precision = calculate_precision(predicted_moves, valid_moves, 0.01)
+    recall = calculate_recall(predicted_moves, valid_moves, 0.01)
     results_dict['precision'] = precision
     results_dict['recall'] = recall
     for m in all_moves:

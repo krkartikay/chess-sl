@@ -18,26 +18,26 @@ N_HIDDEN = Config(
 N_BLOCKS = Config(
     name = "N_BLOCKS",
     default=8,
-    dev=12,
+    dev=4,
     values=[0,1,4,8]
 )
 
 N_CHANNELS = Config(
     name="N_CHANNELS",
     default=16,
-    dev=1024,
+    dev=16,
     values=[4,16,64,128]
 )
 
 FILTER_SIZE = Config(
     name="FILTER_SIZE",
-    default=3
+    default=9
 )
 
 NUM_TRAINING_EXAMPLES = Config(
     name="NUM_TRAINING_EXAMPLES",
     default=10000,
-    dev=100000,
+    dev=10000,
     values=[10000, 30000, 100000]
 )
 

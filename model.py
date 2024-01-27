@@ -46,7 +46,8 @@ class ChessModel(nn.Module):
         x = F.relu(x)
         # Output layer
         x = self.output_layer(x)
-        x = F.sigmoid(x)
+        # Outputs the logits normalised by log_softmax
+        x = F.log_softmax(x, dim=1)
         return x
 
     def device(self):

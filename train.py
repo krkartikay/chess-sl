@@ -67,8 +67,9 @@ def train_model(positions: torch.Tensor, valid_moves: torch.Tensor) -> Tuple[Dic
         for batch_num, (train_positions, train_valid_moves) in enumerate(train_dataloader):
             sgd_optimizer.zero_grad()
 
-            move_probs = chess_model(train_positions)
-            loss = F.binary_cross_entropy(move_probs, train_valid_moves)
+            move_logits = chess_model(train_positions)
+            valid_move_probs = train_valid_moves / train_valid_moves.sum(dim=1, keepdims=True)
+            loss = F.kl_div(move_logits, valid_move_probs, reduction='batchmean')
 
             loss.backward()
             sgd_optimizer.step()
@@ -83,9 +84,10 @@ def train_model(positions: torch.Tensor, valid_moves: torch.Tensor) -> Tuple[Dic
         total_test_loss = 0
         with torch.no_grad():
             for test_positions, test_valid_moves in test_dataloader:
-                test_move_probs = chess_model(test_positions)
-                test_loss = F.binary_cross_entropy(
-                    test_move_probs, test_valid_moves)
+                test_move_logits = chess_model(test_positions)
+                valid_move_probs = test_valid_moves / test_valid_moves.sum(dim=1, keepdims=True)
+                test_loss = F.kl_div(
+                    test_move_logits, valid_move_probs, reduction='batchmean')
                 total_test_loss += test_loss.item()
 
         average_train_loss = total_train_loss / len(train_dataloader)
