@@ -23,6 +23,8 @@ class ChessModel(nn.Module):
         x = F.sigmoid(x)
         return x
 
+    def device(self):
+        return next(self.parameters()).device
 
 if __name__ == "__main__":
     model = ChessModel()

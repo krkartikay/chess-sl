@@ -13,6 +13,8 @@ def experiment_main():
     results_dict['avg_moves'] = avg_moves
     results_dict['score'] = score
     all_moves_hist = [0]*10
+    positions = positions.to(model.device())
+    valid_moves = valid_moves.to(model.device())
     predicted_moves = model(positions)
     precision = calculate_precision(predicted_moves, valid_moves)
     recall = calculate_recall(predicted_moves, valid_moves)
