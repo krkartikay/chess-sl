@@ -1,0 +1,9 @@
+streamlit
+chess
+torch
+numpy
+matplotlib
+plotly
+streamlit-ace
+python-chess
+# streamlit-chessboard

@@ -29,6 +29,10 @@ def load_data(filename="games.pth") -> Tuple[torch.Tensor, torch.Tensor]:
 def train_model(positions: torch.Tensor, valid_moves: torch.Tensor) -> Tuple[Dict, ChessModel]:
     # Transfer data to GPU if available
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    
+    # Clear GPU cache before loading data
+    if device == 'cuda':
+        torch.cuda.empty_cache()
 
     positions = positions.to(device)
     valid_moves = valid_moves.to(device)
@@ -92,6 +96,10 @@ def train_model(positions: torch.Tensor, valid_moves: torch.Tensor) -> Tuple[Dic
         average_test_loss = total_test_loss / len(test_dataloader)
         loss_observer.record([average_train_loss, average_test_loss])
         print(f"Epoch {epoch+1}, Average Test Loss: {average_test_loss:.4f}")
+        
+        # Clear GPU cache after each epoch
+        if device == 'cuda':
+            torch.cuda.empty_cache()
 
     results = {'final_train_loss': average_train_loss, 'final_test_loss': average_test_loss}
 

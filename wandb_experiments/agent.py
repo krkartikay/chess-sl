@@ -23,10 +23,7 @@ class ChessModelAgent(ChessAgent):
         # Batching? Inference Server? Ideas?
         position_tensor = board_to_tensor(position).unsqueeze(0)
         position_tensor = position_tensor.to(self.model.device())
-        
-        with torch.no_grad():  # Disable gradients for inference
-            probs = self.model(position_tensor)
-            
+        probs = self.model(position_tensor)
         if probs.sum() <= 0:
             # This sometimes happens if the model is not trained properly
             # print(position)
@@ -35,10 +32,4 @@ class ChessModelAgent(ChessAgent):
         sampled_action = int(torch.multinomial(probs, 1).item())
         move = action_to_move(sampled_action, position)
         # print(move, "%.2f" % probs[0, sampled_action])
-        
-        # Clear tensors from memory
-        del position_tensor, probs
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-            
         return move if move in position.legal_moves else None
