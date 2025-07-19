@@ -33,15 +33,7 @@ def main():
     # Evaluate model
     print("Evaluating model vs random opponent...")
     avg_moves, score, all_moves = evaluate_model_vs_random(model, num_games=100)
-    
-    # Calculate precision and recall on training data
-    print("Calculating precision and recall...")
-    model.eval()
-    with torch.no_grad():
-        predicted_moves = model(positions)
-    # precision = calculate_precision(predicted_moves, valid_moves)
-    # recall = calculate_recall(predicted_moves, valid_moves)
-    
+
     # Create move length histogram
     all_moves_hist = [0] * 10
     for m in all_moves:
@@ -66,13 +58,6 @@ def main():
     wandb.log(final_results)
     
     print(f"Run completed! Score: {score}, Win rate: {score/100:.2%}")
-    
-    # Clear GPU memory at end
-    del positions, valid_moves, model, predicted_moves
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
-        torch.cuda.synchronize()
-
 
 if __name__ == "__main__":
     main()
