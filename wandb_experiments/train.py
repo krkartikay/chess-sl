@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 import wandb
 import os
+import argparse
 
 from torch.utils.data import TensorDataset, DataLoader
 from torch.utils.data.dataset import random_split
@@ -37,7 +38,7 @@ def load_data(filename="../games.pth", num_training_examples=10000) -> Tuple[tor
     return positions, valid_moves
 
 
-def train_model(positions: torch.Tensor, valid_moves: torch.Tensor, config: dict) -> Tuple[Dict, ChessModel]:
+def train_model(positions: torch.Tensor, valid_moves: torch.Tensor, config: dict, save_model: bool = False) -> Tuple[Dict, ChessModel]:
     # Transfer data to GPU if available
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     print(f"Using device: {device}")
@@ -96,8 +97,10 @@ def train_model(positions: torch.Tensor, valid_moves: torch.Tensor, config: dict
         for batch_num, (train_positions, train_valid_moves) in enumerate(train_dataloader):
             optimizer.zero_grad()
 
-            move_probs = chess_model(train_positions)
-            loss = F.binary_cross_entropy(move_probs, train_valid_moves)
+            # train_positions: [batch_size, 7, 8, 8] float32
+            # train_valid_moves: [batch_size, 64*64] float32
+            move_probs = chess_model(train_positions)  # -> [batch_size, 64*64] float32
+            loss = F.binary_cross_entropy(move_probs, train_valid_moves)  # -> scalar
 
             loss.backward()
             optimizer.step()
@@ -119,8 +122,10 @@ def train_model(positions: torch.Tensor, valid_moves: torch.Tensor, config: dict
         
         with torch.no_grad():
             for test_positions, test_valid_moves in test_dataloader:
-                test_move_probs = chess_model(test_positions)
-                test_loss = F.binary_cross_entropy(test_move_probs, test_valid_moves)
+                # test_positions: [batch_size, 7, 8, 8] float32
+                # test_valid_moves: [batch_size, 64*64] float32
+                test_move_probs = chess_model(test_positions)  # -> [batch_size, 64*64] float32
+                test_loss = F.binary_cross_entropy(test_move_probs, test_valid_moves)  # -> scalar
                 total_test_loss += test_loss.item()
 
         average_train_loss = total_train_loss / len(train_dataloader)
@@ -146,4 +151,49 @@ def train_model(positions: torch.Tensor, valid_moves: torch.Tensor, config: dict
         'best_test_loss': best_test_loss
     }
 
+    # Save model if requested
+    if save_model:
+        torch.save(chess_model.state_dict(), 'model.pth')
+        print("Model saved to model.pth")
+
     return results, chess_model
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Train a chess model')
+    parser.add_argument('--save-model', action='store_true', 
+                       help='Save the trained model to model.pth')
+    parser.add_argument('--data-file', default='../games.pth',
+                       help='Path to the training data file (default: ../games.pth)')
+    parser.add_argument('--num-examples', type=int, default=10000,
+                       help='Number of training examples to use (default: 10000)')
+    
+    args = parser.parse_args()
+    
+    # Default configuration for standalone training
+    default_config = {
+        'n_blocks': 8,
+        'n_channels': 128,
+        'n_hidden': 4096,
+        'batch_size': 256,
+        'num_epochs': 20,
+        'optimizer': 'ADAM',
+        'learning_rate_multiplier': 3.0
+    }
+    
+    # Initialize wandb for tracking
+    wandb.init(project="chess-sl", config=default_config)
+    
+    # Load data
+    positions, valid_moves = load_data(args.data_file, args.num_examples)
+    
+    # Train model
+    results, model = train_model(positions, valid_moves, default_config, save_model=args.save_model)
+    
+    print(f"Training completed. Final test loss: {results['final_test_loss']:.4f}")
+    
+    wandb.finish()
+
+
+if __name__ == "__main__":
+    main()
