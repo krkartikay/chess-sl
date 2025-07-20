@@ -24,6 +24,10 @@ class ChessModelAgent(ChessAgent):
         position_tensor = board_to_tensor(position).unsqueeze(0)
         position_tensor = position_tensor.to(self.model.device())
         probs = self.model(position_tensor)
+        # # Make all probabilities which are less than 0.5 zero
+        # # And all others to 1
+        # probs[probs < 0.5] = 0
+        # probs[probs >= 0.5] = 1
         if probs.sum() <= 0:
             # This sometimes happens if the model is not trained properly
             # print(position)

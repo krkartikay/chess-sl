@@ -15,6 +15,8 @@ def evaluate_model_vs_random(model: ChessModel,
     other = RandomChessAgent()
     print(f"Evaluating model...")
     for i in range(num_games):
+        if i % 100 == 0:
+            print(f"Game {i+1}/{num_games}")
         (moves, score, draws, other_score,
             forfeit) = play_agent_vs_agent(agent, other)
         moves_played.append(moves)
@@ -89,3 +91,26 @@ def calculate_recall(move_probs: torch.Tensor, valid_moves: torch.Tensor, thresh
     predicted_positives = move_probs >= threshold
     true_positives = predicted_positives & valid_moves.bool()
     return (true_positives.sum() / valid_moves.sum()).item()
+
+
+if __name__ == "__main__":
+    # load and evaluate model vs random agent
+    import model
+    default_config = {
+        'n_blocks': 8,
+        'n_channels': 128,
+        'n_hidden': 4096,
+        'batch_size': 256,
+        'num_epochs': 20,
+        'optimizer': 'ADAM',
+        'learning_rate_multiplier': 3.0
+    }
+    chess_model = model.ChessModel(n_blocks=default_config['n_blocks'],
+                                   n_channels=default_config['n_channels'],
+                                   n_hidden=default_config['n_hidden']).to('cuda' if torch.cuda.is_available() else 'cpu')
+    chess_model.load_state_dict(torch.load("model.pth"))
+    chess_model.eval()
+    print("Evaluating model vs random agent...")
+    avg_moves, score, all_moves = evaluate_model_vs_random(chess_model, num_games=1000)
+    print(f"Average moves played: {avg_moves}, Score: {score}")
+    print(f"All moves played: {all_moves}")

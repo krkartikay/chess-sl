@@ -176,7 +176,7 @@ def main():
     model_files = []
     for root, dirs, files in os.walk("../"):
         for file in files:
-            if file.endswith('.pt') and 'model' in file:
+            if file.endswith('.pth') and 'model' in file:
                 model_files.append(os.path.join(root, file))
     
     if not model_files:
@@ -187,8 +187,8 @@ def main():
     
     # Model architecture configuration
     st.sidebar.subheader("Model Architecture")
-    n_blocks = st.sidebar.slider("Number of Conv Blocks", 0, 8, 4)
-    n_channels = st.sidebar.slider("Number of Channels", 4, 128, 16)
+    n_blocks = st.sidebar.slider("Number of Conv Blocks", 0, 8, 8)
+    n_channels = st.sidebar.slider("Number of Channels", 4, 128, 128)
     n_hidden = st.sidebar.selectbox("Hidden Layer Size", [1024, 4096], index=1)
     
     config = {

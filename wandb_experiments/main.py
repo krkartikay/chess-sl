@@ -37,7 +37,11 @@ def main():
     # Create move length histogram
     all_moves_hist = [0] * 10
     for m in all_moves:
-        all_moves_hist[m // 10] += 1
+        if m < 100:
+            all_moves_hist[m // 10] += 1
+        else:
+            # If move count exceeds 90, categorize it in the last bin
+            all_moves_hist[9] += 1
     
     # Log all results to wandb
     final_results = {
